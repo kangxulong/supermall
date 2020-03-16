@@ -37,7 +37,6 @@ export default {
   methods: {
     itemClick() {
       this.$router.push(this.path)
-      console.log('itemClick')
     }
   }
 }
@@ -47,7 +46,7 @@ export default {
   .tab-bar-item {
     flex: 1;
     text-align: center;
-    margin-top: 3px
+    margin-top: 5px
   }
 
   .tab-bar-item img {
