@@ -2,10 +2,10 @@
   <div id="detail">
     <detail-nav-bar class="detail-nav-bar"></detail-nav-bar>
     <scroll class="content" ref="scroll">
-      <detail-swiper :topImages = "topImages" />
+      <detail-swiper :top-images = "topImages" />
       <detail-base-info :goods = "goods"></detail-base-info>
       <detail-shop-info :shop = "shop"></detail-shop-info>
-      <detail-goods-info :detailInfo = "detailInfo" @imageLoad = "imageLoad"></detail-goods-info>
+      <detail-goods-info :detail-info = "detailInfo" @imageLoad = "imageLoad"></detail-goods-info>
     </scroll>
   </div>
 </template>

@@ -32,7 +32,7 @@
         // 如果需要点击div，必须把click设置为true
         click: true,
         probeType: this.probeType,
-        pullUpLoad:this.PullUpLoad
+        pullUpLoad:this.pullUpLoad
       })
 
       // 2. 监听滚动的位置
@@ -42,7 +42,7 @@
         });
       }
       // 3.监听上拉加载的情况
-      if (this.PullUpLoad = true) {
+      if (this.pullUpLoad = true) {
         this.scroll.on('pullingUp',() => {
           this.$emit('pullingUp')
         })
