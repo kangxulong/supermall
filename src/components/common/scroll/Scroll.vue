@@ -32,26 +32,34 @@
         // 如果需要点击div，必须把click设置为true
         click: true,
         probeType: this.probeType,
-        pullUpLoad: this.pullUpLoad
+        pullUpLoad:this.PullUpLoad
       })
 
       // 2. 监听滚动的位置
-      this.scroll.on('scroll', position => {
-        this.$emit('scroll', position)
-      });
-
-      // 3. 监听上拉加载时间
-      this.scroll.on('pullingUp', () => {
-        this.$emit('pullingUp')
-        
-      })
+      if (this.probeType === 2 || this.probeType ===3 ) {
+        this.scroll.on('scroll', position => {
+          this.$emit('scroll', position)
+        });
+      }
+      // 3.监听上拉加载的情况
+      if (this.PullUpLoad = true) {
+        this.scroll.on('pullingUp',() => {
+          this.$emit('pullingUp')
+        })
+      }
     },
     methods: {
       scrollTo(x, y, time=500) {
-        this.scroll.scrollTo(x, y, time)
+        this.scroll && this.scroll.scrollTo(x, y, time)
+      },
+      refresh() {
+        this.scroll && this.scroll.refresh()
       },
       finishPullUp() {
-        this.scroll.finishPullUp()
+        this.scroll && this.scroll.finishPullUp()
+      },
+      getScrollY() {
+        return this.scroll ? this.scroll.y : 0
       }
     }
   }

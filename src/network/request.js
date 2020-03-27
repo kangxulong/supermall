@@ -8,7 +8,7 @@ export function request(config) {
     timeout: 5000
   })
 
-  // 3. axios拦截器的使用
+  // 2. axios拦截器的使用
 
   //全局拦截
   // axios.interceptors.request.use

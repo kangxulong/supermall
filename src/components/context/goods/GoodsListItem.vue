@@ -1,13 +1,11 @@
 <template>
-  <div class="goodsListItem">
-    <a :href="goodsListItem.link">
-      <img :src="goodsListItem.show.img" alt="">
-      <div class="good-info">
-        <p>{{goodsListItem.title}}</p>
-        <span class="price">￥{{goodsListItem.price}}</span>
-        <span class="collect">{{goodsListItem.cfav}}</span>
-      </div>
-    </a>
+  <div class="goodsListItem" @click="itemClick">
+    <img :src="goodsListItem.show.img" alt="" @load="imageLoad">
+    <div class="good-info">
+      <p>{{goodsListItem.title}}</p>
+      <span class="price">￥{{goodsListItem.price}}</span>
+      <span class="collect">{{goodsListItem.cfav}}</span>
+    </div>
   </div>
 </template>
 
@@ -17,10 +15,24 @@
      goodsListItem: {
        type: Object,
        default() {
-         return {}
+         return {
+
+         }
        }
      }
-   } 
+   },
+   methods: {
+    // 监听图片加载完成，以进行scroll.refresh()，这样better-scroll才会重新计算高度
+    imageLoad() {
+      // 利用‘事件总线’作为中继，把图片加载监听事件发送到home中进行监听变化
+      this.$bus.$emit('itemImageLoad')
+    },
+
+    itemClick() {
+      // 跳转到详情页detial
+      this.$router.push('/detail/' + this.goodsListItem.iid)
+    }
+   }
   }
 </script>
 

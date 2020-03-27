@@ -1,19 +1,25 @@
 <template>
   <div id="home">
     <nav-bar class="home-bar"><div slot="center">购物街</div></nav-bar>
+    <tab-control 
+        :titles="['流行', '新款', '精选']" 
+        class="tab-control"
+        @tabClick="tabClick"
+        ref="tabControl1" 
+        v-show="isFixed"></tab-control>
     <scroll class="content" 
             ref="scroll" 
             :probe-type = "3" 
-            @scroll="contentScroll"
+            @scroll = "contentScroll"
             :pull-up-load = "true"
             @pullingUp = "loadMore">
-      <home-swiper :banners = "banners"></home-swiper>
+      <home-swiper :banners = "banners" @swiperImageLoad = "swiperImageLoad"></home-swiper>
       <recommends-view :recommends = "recommends"></recommends-view>
       <feature-view></feature-view>
       <tab-control 
-      :titles="['流行', '新款', '精选']" 
-      class="tab-control"
-      @tabClick="tabClick"></tab-control>
+        :titles="['流行', '新款', '精选']" 
+        @tabClick="tabClick"
+        ref="tabControl2"></tab-control>
       <goods-list :goodsList="showTab"></goods-list>
     </scroll>
     <!-- 监听组件的事件需要在click后加上.native，否则组件点击不生效 -->
@@ -37,6 +43,7 @@
     getHomeGoods
     } from "network/home"
 
+  import {debounce} from "common/utils"
 
 
   export default {
@@ -60,14 +67,38 @@
           "sell": {page:0, list: []},
         },
         currentType: "pop",
-        isShow: false
+        isShow: false,
+        tabOffSetTop:false,
+        isFixed: false,
+        saveY: 0
       }
     },
     created() {
+      // 请求多个数据
       this.getHomeMultidata()
+
+      // 请求商品数据
       this.getHomeGoods("pop")
       this.getHomeGoods("new")
       this.getHomeGoods("sell")
+    },
+    mounted() {
+      // 图片加载完成的事件监听
+      const refresh = debounce(this.$refs.scroll.refresh, 500)
+      // 监听item中图片加载情况，以让better-scroll重新计算高度
+      this.$bus.$on('itemImageLoad', () => {
+        refresh()
+      })
+    },
+    activated() {
+      // 进入页面时滚动到saveY的位置
+      // 此时最好进行一次刷新
+      this.$refs.scroll.refresh()
+      this.$refs.scroll.scrollTo(0, this.saveY, 0)
+    },
+    deactivated() {
+      // 将离开前的位置信息保存到变量saveY中
+      this.saveY = this.$refs.scroll.getScrollY()
     },
     computed: {
       showTab() {
@@ -90,35 +121,42 @@
             this.currentType = "sell";
             break
         }
+        // 使用tabControl组件里的currentIndex属性来确定当前选中的是哪个
+        this.$refs.tabControl1.currentIndex = index
+        this.$refs.tabControl2.currentIndex = index
       },
-
       backClick() {
         // 这样调用会非常长，不利于阅读
         // this.$refs.scroll.scroll.scrollTo(0,0,500)
 
         this.$refs.scroll.scrollTo(0, 0)
       },
-
       contentScroll(position) {
+        // backTop的滑动监听
         this.isShow = (-position.y) > 1000
+
+        // tabControl的fixed监听
+        this.isFixed = (-position.y) > this.tabOffSetTop
+      },
+      loadMore() {
+        this.getHomeGoods(this.currentType)
+      },
+      swiperImageLoad() {
+        // 使用tabOffSetTop来保存tabControl的offsetTop属性
+        this.tabOffSetTop = this.$refs.tabControl2.$el.offsetTop
       },
 
-      loadMore() {
-        this.getHomeGoods(this.currentType);
-        /* 暂时解决better-scroll计算content高度时，因图片未加载，没有计算图片高度 
-          导致高度计算错误，从而页面不能滚动，解决方法就是在数据请求后再进行一次刷新
-        */
-        // this.$refs.scroll.scroll.refresh() 
-                                          
-      },
+      // backTabControl() {
+      //   this.$refs.tabControl1.$el.scrollTo(0, this.tabOffSetTop, 0)
+      // },
 
       /*
         网络请求相关的方法
       */
       getHomeMultidata() {
-        getHomeMultidata().then( res => {
-        this.banners = res.data.banner.list;
-        this.recommends = res.data.recommend.list; 
+        getHomeMultidata().then(res => {
+          this.banners = res.data.banner.list;
+          this.recommends = res.data.recommend.list; 
         })
       },
       getHomeGoods(type) {
@@ -143,17 +181,11 @@
   .home-bar {
     background-color: #ff8198;
     color: #ffffff; 
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    z-index: 10;
   }
 
   .tab-control {
-    position: sticky;
-    top: 44px;
-    z-index: 10;
+    position: relative;
+    z-index: 9;
   }
 
   .content {
