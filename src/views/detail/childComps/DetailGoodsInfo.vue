@@ -32,9 +32,9 @@
     methods: {
       imageLoad() {
         // 判断所有图片都加载完，那么进行一次回调发射就可以了
-        if(++this.counter === this.imageLength) {
+        // if(++this.counter === this.imageLength) {
           this.$emit('imageLoad')
-        }
+        // }
       }
     },
     watch:{

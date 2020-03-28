@@ -5,7 +5,7 @@
       <detail-swiper :top-images = "topImages" />
       <detail-base-info :goods = "goods"></detail-base-info>
       <detail-shop-info :shop = "shop"></detail-shop-info>
-      <detail-goods-info :detail-info = "detailInfo" @imageLoad = "imageLoad"></detail-goods-info>
+      <detail-goods-info :detail-info = "detailInfo"></detail-goods-info>
     </scroll>
   </div>
 </template>
@@ -20,6 +20,8 @@
   import Scroll from "components/common/scroll/Scroll"
   
   import {getDetail, goods, shop} from "network/detail"
+
+  import {debounce} from "common/utils"
 
   export default {
     name: "Detail",
@@ -64,13 +66,8 @@
       })
     },
     mounted() {
-      console.log("mounted");
-      this.$refs.scroll.refresh()
-    },
-    methods: {
-      imageLoad() {
-        this.$refs.scroll.refresh()
-      }
+      const refresh = debounce(this.$refs.scroll.refresh, 500)
+      refresh()
     }
   }
 </script>
