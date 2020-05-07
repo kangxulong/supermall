@@ -5,10 +5,12 @@
       <div class="desc">{{detailInfo.desc}}</div>
       <div class="desc-end"></div>
     </div>
-    <div class="info-key">{{detailInfo.detailImage[0].key}}</div>
-    <div class="info-img">
-      <img v-for="(item, index) in detailInfo.detailImage[0].list" :key="index" :src="item" alt="" 
-      @load="imageLoad">
+    <div v-for="(item,index) in detailInfo.detailImage" :key="index">
+      <div class="info-key">{{item.key}}</div>
+      <div class="info-img">
+        <img v-for="(itemImg, index) in item.list" :key="index" :src="itemImg" alt="" 
+        @load="imageLoad">
+      </div>
     </div>
   </div>
 </template>
@@ -32,9 +34,9 @@
     methods: {
       imageLoad() {
         // 判断所有图片都加载完，那么进行一次回调发射就可以了
-        // if(++this.counter === this.imageLength) {
+        if(++this.counter === this.imageLength) {
           this.$emit('imageLoad')
-        // }
+        }
       }
     },
     watch:{
@@ -49,6 +51,7 @@
 <style scoped>
   .goods-info {
     padding: 20px 10px;
+    border-bottom: 5px solid #f2f5f8;
   }
 
   .info-desc {

@@ -115,7 +115,6 @@
     text-align: center;
   }
   .shop-middle-right table {
-    margin-left: 30px;
     color: #222;
   }
   .shop-middle-right td {

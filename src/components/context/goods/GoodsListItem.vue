@@ -1,6 +1,6 @@
 <template>
   <div class="goodsListItem" @click="itemClick">
-    <img :src="goodsListItem.show.img" alt="" @load="imageLoad">
+    <img :src="showImg" alt="" @load="imageLoad">
     <div class="good-info">
       <p>{{goodsListItem.title}}</p>
       <span class="price">￥{{goodsListItem.price}}</span>
@@ -19,6 +19,12 @@
 
          }
        }
+     }
+   },
+   computed:{
+    //  详情页推荐和首页的数据字段名不同
+     showImg() {
+       return this.goodsListItem.image || this.goodsListItem.show.img
      }
    },
    methods: {

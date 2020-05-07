@@ -73,6 +73,7 @@
     padding: 2px 8px;
     border-radius: 8px;
     margin-left: 5px;
+    font-size: 13px;
 
     /* 让元素上浮动一点，使用relative即可 */
     position: relative;

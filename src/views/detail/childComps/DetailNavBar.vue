@@ -31,7 +31,8 @@
     methods: {
       titleClick(index) {
         // 此处打印index如果显示MouseEvent，表示没有index参数传入，只是简单的事件参数
-        this.currentIndex = index
+        this.currentIndex = index;
+        this.$emit('titleClick', index)
       },
       backClick() {
         // 返回上一页

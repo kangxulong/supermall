@@ -9,6 +9,12 @@ export function getDetail(iid) {
   })
 }
 
+export function getRecommend() {
+  return request({
+    url: '/recommend',
+  })
+}
+
 // 整合detail里的res里的数据
 
 export class goods {
@@ -33,5 +39,13 @@ export class shop {
     this.sells = shopInfo.cSells;
     this.score = shopInfo.score;
     this.shopUrl = shopInfo.shopUrl
+  }
+}
+
+export class goodsParams {
+  constructor(info, rule) {
+    this.images = info.images?info.images[0]:"";
+    this.infos = info.set;
+    this.sizes = rule.tables
   }
 }

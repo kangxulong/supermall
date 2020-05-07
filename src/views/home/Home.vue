@@ -22,7 +22,7 @@
         ref="tabControl2"></tab-control>
       <goods-list :goodsList="showTab"></goods-list>
     </scroll>
-    <!-- 监听组件的事件需要在click后加上.native，否则组件点击不生效 -->
+    <!-- 直接监听组件的事件需要在click后加上.native，否则组件点击不生效 -->
     <back-top @click.native="backClick" v-show="isShow"></back-top>
   </div>
 </template>
@@ -44,6 +44,7 @@
     } from "network/home"
 
   import {debounce} from "common/utils"
+  import {itemImgListener} from "common/mixin"
 
 
   export default {
@@ -73,6 +74,7 @@
         saveY: 0
       }
     },
+    mixins:[itemImgListener],
     created() {
       // 请求多个数据
       this.getHomeMultidata()
@@ -82,14 +84,6 @@
       this.getHomeGoods("new")
       this.getHomeGoods("sell")
     },
-    mounted() {
-      // 图片加载完成的事件监听
-      const refresh = debounce(this.$refs.scroll.refresh, 500)
-      // 监听item中图片加载情况，以让better-scroll重新计算高度
-      this.$bus.$on('itemImageLoad', () => {
-        refresh()
-      })
-    },
     activated() {
       // 进入页面时滚动到saveY的位置
       // 此时最好进行一次刷新
@@ -97,8 +91,11 @@
       this.$refs.scroll.scrollTo(0, this.saveY, 0)
     },
     deactivated() {
-      // 将离开前的位置信息保存到变量saveY中
+      // 1. 将离开前的位置信息保存到变量saveY中
       this.saveY = this.$refs.scroll.getScrollY()
+
+      // 2. 离开home页面后不再进行图片加载的监听
+      this.$bus.$off('itemImageLoad', this.itemImgListener)
     },
     computed: {
       showTab() {
